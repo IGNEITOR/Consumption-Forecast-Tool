@@ -102,7 +102,7 @@ const state = {
     factors: {},
     results: [],
     charts: {},
-    lang: 'de'
+    lang: 'en'
 };
 
 // ================================
@@ -687,10 +687,19 @@ function initTheme() {
 function initLanguage() {
     const select = document.getElementById('language-select');
     const saved = localStorage.getItem('language');
+    const defaultLang = 'en'; // Standard-Sprache
+    
     if (saved && (saved === 'de' || saved === 'en')) {
         select.value = saved;
         state.lang = saved;
+    } else {
+        // Keine gespeicherte Sprache -> Default verwenden
+        select.value = defaultLang;
+        state.lang = defaultLang;
+        localStorage.setItem('language', defaultLang);
     }
+    
+    updateLanguage(state.lang); // Sprache sofort anwenden
     
     select.onchange = () => {
         updateLanguage(select.value);
