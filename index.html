@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verbrauchs-Prognose</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/Chart.js@4.4.1/dist/chart.umd.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>📊 Verbrauchs-Prognose</h1>
+        <div class="header-controls">
+            <button id="theme-toggle" class="theme-btn" title="Dark/Light Mode">
+                <span id="theme-icon">🌙</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section id="upload-section">
+            <p>Excel-Datei mit Produkten, Untertypen und monatlichen Verbrauchsdaten hochladen</p>
+            <div class="upload-area">
+                <input type="file" id="file-input" accept=".xlsx,.xls" hidden>
+                <button id="upload-btn" class="btn primary">📁 Excel auswählen</button>
+                <span id="filename">Keine Datei gewählt</span>
+            </div>
+        </section>
+
+        <section id="app-section" class="hidden">
+            <div id="file-info-bar">
+                <span id="current-file"></span>
+                <button id="change-file-btn" class="btn secondary small">📁 Datei wechseln</button>
+            </div>
+            
+            <div id="product-selector">
+                <label for="product-dropdown">Produkt:</label>
+                <select id="product-dropdown"></select>
+            </div>
+            
+            <div id="tabs-container"></div>
+            <div id="tab-content"></div>
+        </section>
+
+        <section id="export-section" class="hidden">
+            <h2>💾 Export</h2>
+            <div id="results-table-container"></div>
+            <button id="export-btn" class="btn primary">📥 Excel herunterladen</button>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
