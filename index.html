@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verbrauchs-Prognose</title>
+    <title>Consumption Forecast Tool</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/Chart.js@4.4.1/dist/chart.umd.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -11,8 +11,12 @@
 </head>
 <body>
     <header>
-        <h1>📊 Verbrauchs-Prognose</h1>
+        <h1>📊 Consumption Forecast Tool</h1>
         <div class="header-controls">
+            <select id="language-select" class="language-select">
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="en">🇬🇧 English</option>
+            </select>
             <button id="theme-toggle" class="theme-btn" title="Dark/Light Mode">
                 <span id="theme-icon">🌙</span>
             </button>
@@ -21,22 +25,22 @@
 
     <main>
         <section id="upload-section">
-            <p>Excel-Datei mit Produkten, Untertypen und monatlichen Verbrauchsdaten hochladen</p>
+            <p data-i18n="upload.description">Excel-Datei mit Produkten, Untertypen und monatlichen Verbrauchsdaten hochladen</p>
             <div class="upload-area">
                 <input type="file" id="file-input" accept=".xlsx,.xls" hidden>
-                <button id="upload-btn" class="btn primary">📁 Excel auswählen</button>
-                <span id="filename">Keine Datei gewählt</span>
+                <button id="upload-btn" class="btn primary" data-i18n="upload.selectBtn">📁 Excel auswählen</button>
+                <span id="filename" data-i18n="upload.noFile">Keine Datei gewählt</span>
             </div>
         </section>
 
         <section id="app-section" class="hidden">
             <div id="file-info-bar">
                 <span id="current-file"></span>
-                <button id="change-file-btn" class="btn secondary small">📁 Datei wechseln</button>
+                <button id="change-file-btn" class="btn secondary small" data-i18n="app.changeFile">📁 Datei wechseln</button>
             </div>
             
             <div id="product-selector">
-                <label for="product-dropdown">Produkt:</label>
+                <label for="product-dropdown" data-i18n="app.product">Produkt:</label>
                 <select id="product-dropdown"></select>
             </div>
             
@@ -45,9 +49,9 @@
         </section>
 
         <section id="export-section" class="hidden">
-            <h2>💾 Export</h2>
+            <h2 data-i18n="export.title">💾 Export</h2>
             <div id="results-table-container"></div>
-            <button id="export-btn" class="btn primary">📥 Excel herunterladen</button>
+            <button id="export-btn" class="btn primary" data-i18n="export.downloadBtn">📥 Excel herunterladen</button>
         </section>
     </main>
 
