@@ -1,47 +1,82 @@
-# Verbrauchs-Prognose
+# Consumption Forecast Tool
 
-Web-App zur Prognose von Verbrauchsdaten basierend auf historischen Excel-Daten.
+A lightweight, browser-based forecasting dashboard that turns historical consumption data from Excel into a clear 5‑year outlook.  
+Upload a spreadsheet, explore trends per **Product** and **Subtype**, adjust a scaling factor for “what‑if” scenarios, and export consolidated results back to Excel.
 
-## Features
+---
 
-- Excel-Import (.xlsx/.xls)
-- Automatische Erkennung von Produkten und Untertypen
-- Holt-Winters Triple Exponential Smoothing Prognose
-- 5-Jahres-Prognose (monatlich, quartalsweise, jährlich)
-- Interaktive Charts mit Chart.js
-- Anpassbarer Skalierungsfaktor
-- Dark/Light Mode
-- Excel-Export
+## Why this tool
 
-## Nutzung
+- **Fast, local workflow:** runs in the browser—no server setup required.
+- **Structured forecasting:** built-in seasonal time-series forecasting (Holt‑Winters) with a safe fallback (linear trend).
+- **Decision-ready output:** monthly, quarterly, and yearly rollups plus year‑over‑year deltas.
+- **Presentation-friendly UI:** interactive charts and a clean dark/light theme.
 
-1. Öffne `index.html` im Browser
-2. Lade eine Excel-Datei mit Verbrauchsdaten hoch
+---
 
-### Excel-Format
+## Key capabilities
 
-| Produkt | Untertyp | 01/2024 | 02/2024 | ... |
-|---------|----------|---------|---------|-----|
-| Strom   | Küche    | 150     | 145     | ... |
+- **Excel import** (`.xlsx`, `.xls`)
+- **Automatic parsing** of Product, Subtype, and monthly columns (`MM/YYYY`)
+- **Time-series forecasting**
+  - Holt‑Winters triple exponential smoothing (seasonal)
+  - Fallback to linear regression when history is insufficient
+- **5-year forecast horizon**
+  - Year 1: **monthly**
+  - Years 2–3: **quarterly**
+  - Years 4–5: **yearly**
+- **Interactive visualization** with Chart.js
+- **Adjustable scaling factor** for scenario modeling
+- **Excel export** of aggregated results
+- **Dark / Light mode**
 
-- Spalten: Produkt, Untertyp, Monatsspalten (MM/YYYY)
+---
 
-## Technologien
+## Quick start
 
-- Vanilla JavaScript
-- Chart.js – Diagramme
-- SheetJS – Excel-Import/Export
+1. Open `index.html` in your browser  
+2. Upload your Excel file containing historical consumption values  
+3. Select a **Product** and **Subtype**  
+4. (Optional) Adjust the **Factor** to simulate higher/lower consumption  
+5. Click **Calculate forecast** and review the tables and YoY changes  
+6. Export the consolidated results to `prognose.xlsx`
 
-## Algorithmus
+> Tip: Because everything runs locally in your browser, your data stays on your machine.
 
-Holt-Winters Triple Exponential Smoothing mit Fallback auf lineare Regression bei zu wenig Daten.
+---
 
-## Projektstruktur
+## Expected Excel format
 
-```
-verbrauch_app_html/
-├── index.html
-├── app.js
-├── style.css
-└── README.md
-```
+The first columns should represent **Product** and **Subtype** (the app also tries to detect them by header name).  
+Monthly values must be provided as separate columns with headers in `MM/YYYY` format.
+
+| Product | Subtype | 01/2024 | 02/2024 | ... |
+|--------|---------|--------:|--------:|-----|
+| Electricity | Kitchen | 150 | 145 | ... |
+
+Notes:
+- Month columns are automatically detected by the `MM/YYYY` pattern.
+- Empty cells are ignored.
+- Values are parsed as numbers.
+
+---
+
+## Forecast methodology
+
+- **Primary model:** Holt‑Winters triple exponential smoothing (seasonal length = 12)
+- **Fallback model:** linear regression trend forecast
+- **Non-negative constraint:** forecasts are clipped to 0 to avoid negative consumption
+
+The **Factor** is applied as a multiplicative adjustment on forecast values to support quick scenario analysis.
+
+---
+
+## Output & export
+
+For each Product/Subtype, the app computes:
+- Month-by-month forecast for Year 1
+- Quarterly totals for Years 2 and 3
+- Annual totals for Years 4 and 5
+- Year-over-year percentage changes (relative comparisons across periods)
+
+All selected results are stored in an internal results table and can be exported to Excel.
