@@ -3,6 +3,8 @@
 A lightweight, browser-based forecasting dashboard that turns historical consumption data from Excel into a clear 5‑year outlook.  
 Upload a spreadsheet, explore trends per **Product** and **Subtype**, adjust a scaling factor for “what‑if” scenarios, and export consolidated results back to Excel.
 
+https://igneitor.github.io/Consumption-Forecast-Tool/
+
 ---
 
 ## Why this tool
