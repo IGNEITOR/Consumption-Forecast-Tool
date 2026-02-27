@@ -108,9 +108,10 @@ header h1 {
    Layout
    ================================ */
 main {
-    max-width: 1400px;
+    max-width: 1800px;
+    width: min(1800px, 100%);
     margin: 0 auto;
-    padding: 2rem;
+    padding: clamp(1rem, 2vw + 0.75rem, 2.5rem);
 }
 
 section {
@@ -306,7 +307,7 @@ section {
 
 .tables-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
@@ -330,7 +331,7 @@ section {
     border-radius: 8px;
     border: 1px solid var(--border);
     margin-bottom: 1.5rem;
-    height: 250px;
+    height: clamp(220px, 40vh, 420px);
 }
 
 /* ================================
@@ -401,6 +402,93 @@ section {
     border-bottom: 1px solid var(--border);
 }
 
+.row-actions {
+    white-space: nowrap;
+    width: 90px;
+}
+
+.icon-btn {
+    border: 1px solid var(--border);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    padding: 0.35rem 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 0 2px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.icon-btn:hover:not(:disabled) {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
+
+.icon-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.icon-btn.danger {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.icon-btn.danger:hover:not(:disabled) {
+    background: var(--danger);
+    color: white;
+}
+
+/* ================================
+   Collapsible Sections
+   ================================ */
+.collapsible {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+}
+
+.collapsible summary {
+    cursor: pointer;
+    font-weight: 600;
+    outline: none;
+    list-style: none;
+}
+
+.collapsible summary::-webkit-details-marker {
+    display: none;
+}
+
+.collapsible summary::after {
+    content: '▼';
+    float: right;
+    transition: transform 0.2s;
+}
+
+.collapsible[open] summary::after {
+    transform: rotate(180deg);
+}
+
+.collapsible > div {
+    margin-top: 0.75rem;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.forecast-block {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
 .prognose-table th {
     background: var(--bg-tertiary);
     font-weight: 600;
@@ -440,19 +528,56 @@ section {
    Responsive
    ================================ */
 @media (max-width: 768px) {
-    #app-section {
-        grid-template-columns: 1fr;
-    }
-    
-    .tables-row {
-        grid-template-columns: 1fr;
-    }
-    
     header {
         padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
     }
-    
+
+    .header-controls {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    #file-info-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
     main {
         padding: 1rem;
+    }
+}
+
+@media (max-width: 1100px) {
+    #file-info-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .controls-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #product-selector {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #product-dropdown {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .row-actions {
+        width: auto;
     }
 }
