@@ -4,8 +4,8 @@
 const translations = {
     de: {
         upload: {
-            description: "Excel-Datei mit Produkten, Untertypen und monatlichen Verbrauchsdaten hochladen",
-            selectBtn: "📁 Excel auswählen",
+            description: "Excel/CSV/LibreOffice/OpenOffice (ODS)-Datei mit Produkten, Untertypen und monatlichen Verbrauchsdaten hochladen",
+            selectBtn: "📁 Datei auswählen",
             noFile: "Keine Datei gewählt"
         },
         app: {
@@ -64,8 +64,8 @@ const translations = {
     },
     en: {
         upload: {
-            description: "Upload an Excel file with products, subtypes and monthly consumption data",
-            selectBtn: "📁 Select Excel",
+            description: "Upload an Excel/CSV/LibreOffice/OpenOffice (ODS) file with products, subtypes and monthly consumption data",
+            selectBtn: "📁 Select file",
             noFile: "No file selected"
         },
         app: {

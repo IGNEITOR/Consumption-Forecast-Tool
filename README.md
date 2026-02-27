@@ -18,7 +18,7 @@ https://igneitor.github.io/Consumption-Forecast-Tool/
 
 ## Key capabilities
 
-- **Excel import** (`.xlsx`, `.xls`)
+- **Excel/CSV/ODS import** (`.xlsx`, `.xls`, `.xlsm`, `.ods`, `.ots`, `.fods`, `.csv`, `.tsv`) — works with LibreOffice/OpenOffice files
 - **Automatic parsing** of Product, Subtype, and monthly columns (`MM/YYYY`)
 - **Time-series forecasting**
   - Holt‑Winters triple exponential smoothing (seasonal)
@@ -37,7 +37,7 @@ https://igneitor.github.io/Consumption-Forecast-Tool/
 ## Quick start
 
 1. Open `index.html` in your browser  
-2. Upload your Excel file containing historical consumption values  
+2. Upload your Excel/CSV/ODS file containing historical consumption values  
 3. Select a **Product** and **Subtype**  
 4. (Optional) Adjust the **Factor** to simulate higher/lower consumption  
 5. Click **Calculate forecast** and review the tables and YoY changes  
