@@ -49,15 +49,18 @@ https://igneitor.github.io/Consumption-Forecast-Tool/
 
 ## Expected Excel format
 
-The first columns should represent **Product** and **Subtype** (the app also tries to detect them by header name).  
-Monthly values must be provided as separate columns with headers in `MM/YYYY` format.
+The app automatically looks for product/subtype columns by header name. For the example workbook, it maps:
+- **Product** from columns such as `Product Variances` or `Group`
+- **Subtype** from columns such as `Item number` or `Item text PM`
+
+Monthly values can be provided either as separate columns with headers in `MM/YYYY` format or as descriptive month headers such as `Qty sold in salesQU Jan 19`.
 
 | Product | Subtype | 01/2024 | 02/2024 | ... |
 |--------|---------|--------:|--------:|-----|
 | Electricity | Kitchen | 150 | 145 | ... |
 
 Notes:
-- Month columns are automatically detected by the `MM/YYYY` pattern.
+- Month columns are automatically detected from `MM/YYYY` and month-name headers like `Jan 19`, `Feb 19`, `March 19`.
 - Empty cells are ignored.
 - Values are parsed as numbers.
 

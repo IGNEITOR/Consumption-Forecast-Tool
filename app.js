@@ -74,6 +74,57 @@ function deleteResult(index) {
     showExport();
 }
 
+function normalizeHeader(value) {
+    return String(value ?? '')
+        .trim()
+        .replace(/\s+/g, ' ')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+}
+
+function extractMonthInfo(header) {
+    const normalized = normalizeHeader(header);
+
+    const exactMatch = normalized.match(/^(?:.*?\b)?([0-1]?\d)[\/\-.](\d{4}|\d{2})(?:\b.*)?$/);
+    if (exactMatch) {
+        const month = Number(exactMatch[1]);
+        let year = Number(exactMatch[2]);
+        if (year < 100) year += 2000;
+        if (month >= 1 && month <= 12) return { month, year };
+    }
+
+    const monthNames = {
+        jan: 1, january: 1, feb: 2, february: 2, mar: 3, march: 3, apr: 4, april: 4,
+        may: 5, jun: 6, june: 6, jul: 7, july: 7, aug: 8, august: 8, sep: 9,
+        sept: 9, september: 9, oct: 10, october: 10, nov: 11, november: 11, dec: 12,
+        december: 12, januar: 1, februar: 2, marz: 3, maerz: 3, april: 4, juni: 6,
+        juli: 7, oktober: 10, dezember: 12
+    };
+
+    const monthMatch = normalized.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|marz|maerz|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?|januar|februar|juni|juli|oktober|dezember)\b[^\d]*(\d{2,4})/i);
+    if (!monthMatch) return null;
+
+    const month = monthNames[monthMatch[1].toLowerCase()];
+    let year = Number(monthMatch[2]);
+    if (!month) return null;
+    if (year < 100) year += 2000;
+
+    return { month, year };
+}
+
+function scoreHeader(header, patterns) {
+    const normalized = normalizeHeader(header);
+    return patterns.reduce((score, pattern) => score + (pattern.test(normalized) ? 1 : 0), 0);
+}
+
+function pickBestHeader(headers, candidates, fallbackIndex = 0) {
+    if (candidates.length > 0) {
+        candidates.sort((a, b) => b.score - a.score || a.index - b.index);
+        return candidates[0].header;
+    }
+    return headers[fallbackIndex];
+}
+
 // ================================
 // Translation Helper
 // ================================
@@ -119,31 +170,68 @@ function parseExcelData(jsonData) {
     }
 
     const headers = Object.keys(jsonData[0]);
-    const productCol = headers.find((h) => /produkt|product/i.test(h)) || headers[0];
-    const subtypeCol = headers.find((h) => /untertyp|subtype|typ/i.test(h)) || headers[1];
-
-    const dateCols = headers
-        .filter((h) => h !== productCol && h !== subtypeCol)
-        .filter((h) => /^([0-1]?\d)\/\d{4}$/.test(h))
-        .map((h) => {
-            const [month, year] = h.split('/').map(Number);
-            return month >= 1 && month <= 12 ? { header: h, month, year } : null;
+    const dateColumns = headers
+        .map((header) => {
+            const dateInfo = extractMonthInfo(header);
+            return dateInfo ? { header, ...dateInfo } : null;
         })
         .filter(Boolean)
         .sort((a, b) => (a.year !== b.year ? a.year - b.year : a.month - b.month));
 
-    if (dateCols.length === 0) {
+    const metadataColumns = headers.filter((h) => !dateColumns.some(col => col.header === h));
+    const productCandidates = metadataColumns.map((header, index) => ({
+        header,
+        index,
+        score: scoreHeader(header, [
+            /\bproduct\b/i,
+            /\bprodukt\b/i,
+            /\bgroup\b/i,
+            /\bgruppe\b/i,
+            /\borganization\b/i,
+            /\borganisation\b/i,
+            /\bcompany\b/i,
+            /\bsite\b/i,
+            /\bplant\b/i
+        ])
+    }));
+    const productCol = pickBestHeader(metadataColumns, productCandidates, 0);
+
+    const subtypeCandidates = metadataColumns
+        .filter((header) => header !== productCol)
+        .map((header, index) => ({
+            header,
+            index,
+            score: scoreHeader(header, [
+                /\bsubtype\b/i,
+                /\buntertyp\b/i,
+                /\bitem\s*text\b/i,
+                /\bitem\s*number\b/i,
+                /\btype\b/i,
+                /\btyp\b/i,
+                /\bdescription\b/i,
+                /\bmaterial\b/i,
+                /\barticle\b/i,
+                /\bsku\b/i,
+                /\bvariant\b/i,
+                /\bname\b/i
+            ])
+        }));
+    const subtypeCol = pickBestHeader(metadataColumns.filter((h) => h !== productCol), subtypeCandidates, 1)
+        || metadataColumns.find((h) => h !== productCol)
+        || metadataColumns[1];
+
+    if (dateColumns.length === 0) {
         alert(t('errors.noDateCols'));
         return null;
     }
 
     const records = jsonData.reduce((acc, row) => {
-        const product = row[productCol];
+        const product = normalizeHeader(row[productCol]);
         if (!product) return acc;
 
-        const subtype = row[subtypeCol] ? String(row[subtypeCol]) : '';
+        const subtype = normalizeHeader(row[subtypeCol]);
 
-        dateCols.forEach(({ header, month, year }) => {
+        dateColumns.forEach(({ header, month, year }) => {
             const rawValue = row[header];
             if (rawValue === undefined || rawValue === null || rawValue === '') return;
 
